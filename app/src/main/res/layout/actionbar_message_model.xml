@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="短信模板"
+            android:textColor="@color/colorAccent"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/add_messagemodel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView21"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="19dp"
+            app:srcCompat="@android:drawable/ic_input_add" />
+    </RelativeLayout>
+</LinearLayout>
