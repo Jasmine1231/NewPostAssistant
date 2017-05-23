@@ -172,6 +172,12 @@
         android:textColor="@android:color/background_light"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/register_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.07" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"

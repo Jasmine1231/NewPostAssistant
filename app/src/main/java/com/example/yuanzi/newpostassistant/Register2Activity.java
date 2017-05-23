@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class Register2Activity extends AppCompatActivity {
     private Button registerComplete;
     private LinearLayout choose;
+    private TextView school_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,10 @@ public class Register2Activity extends AppCompatActivity {
             }
         });
 
+        school_name = (TextView)findViewById(R.id.school_name);
+        Intent intent = getIntent();
+        String school = intent.getStringExtra("school");
+        school_name.setText(school);
 
 
     }

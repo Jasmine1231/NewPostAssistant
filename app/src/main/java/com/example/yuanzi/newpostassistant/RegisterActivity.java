@@ -36,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String iCord;
     private int time = 60;
     private boolean flag = true;
+    private TextView info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         nextStep.setOnClickListener(this);
         password1 = (EditText)findViewById(R.id.password1);
         password2 = (EditText)findViewById(R.id.password2);
+        info = (TextView)findViewById(R.id.register_info);
     }
     @Override
     public void onClick(View v) {
@@ -86,7 +88,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 String data = "username="+URLEncoder.encode(phone_number, "utf-8")+"&password="+URLEncoder.encode(password,"utf-8")+""; //请求体的内容
 
                 /*http://118.89.138.167:8080/MyDbtest/InsertServlet*/
-                                String path = "http://118.89.154.154:8080/MyDbtest/InsertServlet";
+                                //String path = "http://118.89.154.154:8080/DBtest/LoginServlet";
+                                String path = "http://10.0.2.2:8080/PostAssistant/InsertServlet";
 
                                 URL url = new URL(path);
 
@@ -104,11 +107,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
                                 //(5)获取服务器返回的状态码
-                                //int code = conn.getResponseCode();
-                                int code = 200;
+                                int code = conn.getResponseCode();
+                                //int code = 200;
                                 if (code == 200) {
                                     Intent i = new Intent(RegisterActivity.this, Register2Activity.class);
                                     startActivity(i);
+                                }else{
+                                    info.setText("注册失败");
                                 }
 
                             } catch (Exception e) {
@@ -205,7 +210,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功,验证通过
                     Toast.makeText(getApplicationContext(), "验证码校验成功", Toast.LENGTH_SHORT).show();
                     handlerText.sendEmptyMessage(2);
-                    nextStep.setEnabled(true);
+                    nextStep.setEnabled(true);//验证码通过，允许进入下一步
                 } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){//服务器验证码发送成功
                     reminderText();
                     Toast.makeText(getApplicationContext(), "验证码已经发送", Toast.LENGTH_SHORT).show();
