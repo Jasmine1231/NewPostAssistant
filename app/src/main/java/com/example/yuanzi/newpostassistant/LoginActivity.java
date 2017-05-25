@@ -3,6 +3,7 @@ package com.example.yuanzi.newpostassistant;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button signup_button;
     private TextView register;
@@ -22,7 +23,44 @@ public class LoginActivity extends AppCompatActivity {
     private CheckBox rememberPass;
     private EditText signup_account;
     private EditText signup_passwd;
+
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        init();
+    }
+
+    public void init(){
+        signup_account = (EditText)findViewById(R.id.signup_account);
+        signup_passwd = (EditText)findViewById(R.id.signup_pswd);
+        rememberPass =(CheckBox)findViewById(R.id.rememberPass);
+        signup_button = (Button)findViewById(R.id.signup);
+        register = (TextView)findViewById(R.id.register);
+        signup_button.setOnClickListener(this);
+        register.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.register:
+                Intent  i = new Intent(LoginActivity.this,RegisterActivity.class);
+                startActivity(i);
+                break;
+            case R.id.signup:
+                Intent  j = new Intent(LoginActivity.this,MainInterfaceActivity.class);
+                startActivity(j);
+                break;
+            default:
+                break;
+
+
+        }
+    }
+}
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -77,3 +115,4 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 }
+*/
