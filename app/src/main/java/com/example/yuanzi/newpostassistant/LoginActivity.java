@@ -2,6 +2,7 @@ package com.example.yuanzi.newpostassistant;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.yuanzi.newpostassistant.Bean.Msg;
+import com.example.yuanzi.newpostassistant.WebService.WebService;
+import com.google.gson.Gson;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button signup_button;
@@ -23,6 +32,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private CheckBox rememberPass;
     private EditText signup_account;
     private EditText signup_passwd;
+    private String info;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +47,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         rememberPass =(CheckBox)findViewById(R.id.rememberPass);
         signup_button = (Button)findViewById(R.id.signup);
         register = (TextView)findViewById(R.id.register);
+//        signup_account = (EditText)findViewById(R.id.signup_account);
+//        signup_passwd = (EditText)findViewById(R.id.signup_pswd);
         signup_button.setOnClickListener(this);
         register.setOnClickListener(this);
     }
@@ -50,13 +62,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(i);
                 break;
             case R.id.signup:
-                Intent  j = new Intent(LoginActivity.this,MainInterfaceActivity.class);
-                startActivity(j);
+                new LoginTask().execute(signup_account.getText().toString(),signup_passwd.getText().toString().trim());
                 break;
             default:
                 break;
 
+        }
+    }
 
+    private class LoginTask extends AsyncTask<String,Void,String>{
+        @Override
+        protected String doInBackground(String... params) {
+            String []str=new String[params.length];
+            int i=0;
+            for(String p:params){
+                str[i]=p;
+                i++;
+            }
+
+            info= WebService.executeLogin(str[0],str[1]);
+            return info;
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Gson gson=new Gson();
+            Msg m=gson.fromJson(info,Msg.class);
+            if(m.getStatus()==0){
+                Intent  i = new Intent(LoginActivity.this,MainInterfaceActivity.class);
+                startActivity(i);
+            }
         }
     }
 }

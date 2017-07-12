@@ -12,6 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.yuanzi.newpostassistant.Bean.Msg;
+import com.example.yuanzi.newpostassistant.WebService.WebService;
+import com.google.gson.Gson;
+
 import org.w3c.dom.Text;
 
 import java.net.HttpURLConnection;
@@ -37,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private int time = 60;
     private boolean flag = true;
     private TextView info;
+    private String infoString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,49 +85,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         switch (v.getId()) {
             case R.id.next_step:
                 if(password1.getText().toString().equals(password2.getText().toString())) {
-                    new Thread() {
-                        public void run() {
-                            try {
-                                String phone_number = phone.getText().toString().trim();
-                                String password = password1.getText().toString().trim();
-                                String data = "username="+URLEncoder.encode(phone_number, "utf-8")+"&password="+URLEncoder.encode(password,"utf-8")+""; //请求体的内容
-
-                /*http://118.89.138.167:8080/MyDbtest/InsertServlet*/
-                                //String path = "http://118.89.154.154:8080/DBtest/LoginServlet";
-                                String path = "http://10.0.2.2:8080/PostAssistant/InsertServlet";
-
-                                URL url = new URL(path);
-
-                                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-                                conn.setRequestMethod("POST"); //默认请求 就是get  要大写
-
-                                conn.setConnectTimeout(5000);
-
-                                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                                conn.setRequestProperty("Content-Length", data.length() + "");
-
-                                conn.setDoOutput(true);
-                                conn.getOutputStream().write(data.getBytes());
-
-
-                                //(5)获取服务器返回的状态码
-                                int code = conn.getResponseCode();
-                                //int code = 200;
-                                if (code == 200) {
-                                    Intent i = new Intent(RegisterActivity.this, Register2Activity.class);
-                                    startActivity(i);
-                                }else{
-                                    info.setText("注册失败");
-                                }
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        ;
-                    }.start();
+                    new RegisterTask().execute(phone.getText().toString(),password1.getText().toString().trim());
                 }
                 else{
                     Toast.makeText(RegisterActivity.this, "请输入相同密码", Toast.LENGTH_LONG).show();
@@ -164,6 +127,32 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             default:
                 break;
+        }
+    }
+
+    private class RegisterTask extends AsyncTask<String,Void,String>{
+        @Override
+        protected String doInBackground(String... params) {
+            String []str=new String[params.length];
+            int i=0;
+            for(String p:params){
+                str[i]=p;
+                i++;
+            }
+
+            infoString= WebService.executeRegister(str[0],str[1]);
+            return infoString;
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Gson gson=new Gson();
+            Msg m=gson.fromJson(s,Msg.class);
+            if(m.getStatus()==0){
+                Intent  i = new Intent(RegisterActivity.this,Register2Activity.class);
+                startActivity(i);
+            }
         }
     }
 
