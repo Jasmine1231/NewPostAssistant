@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView register;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private CheckBox rememberPass;
+    private CheckBox rememberPass,autologin;
     private EditText signup_account;
     private EditText signup_passwd;
     private String info;
@@ -45,12 +45,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signup_account = (EditText)findViewById(R.id.signup_account);
         signup_passwd = (EditText)findViewById(R.id.signup_pswd);
         rememberPass =(CheckBox)findViewById(R.id.rememberPass);
+        autologin = (CheckBox) findViewById(R.id.autologin);
         signup_button = (Button)findViewById(R.id.signup);
         register = (TextView)findViewById(R.id.register);
-//        signup_account = (EditText)findViewById(R.id.signup_account);
-//        signup_passwd = (EditText)findViewById(R.id.signup_pswd);
         signup_button.setOnClickListener(this);
         register.setOnClickListener(this);
+
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isRemember = pref.getBoolean("remember_password",false);
+        boolean isAutoLogin = pref.getBoolean("auto_login",false);
+        if(isRemember){
+            String account = pref.getString("account","");
+            String password = pref.getString("password","");
+            signup_account.setText(account);
+            signup_passwd.setText(password);
+            rememberPass.setChecked(true);
+            if(isAutoLogin){
+                Intent  i = new Intent(LoginActivity.this,MainInterfaceActivity.class);
+                startActivity(i);
+            }
+        }
+
     }
 
 
@@ -86,12 +101,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String info) {
             Gson gson=new Gson();
             Msg m=gson.fromJson(info,Msg.class);
+            String account = signup_account.getText().toString();
+            String password = signup_passwd.getText().toString();
             if(m.getStatus()==0){
+                editor = pref.edit();
+                if (rememberPass.isChecked()){
+                    editor.putBoolean("remember_password",true);
+                    editor.putString("account",account);
+                    editor.putString("password",password);
+                }else{
+                    editor.clear();
+                }
+                editor.apply();
+
+                if(autologin.isChecked()){
+                    editor.putBoolean("auto_login",true).apply();
+                }
                 Intent  i = new Intent(LoginActivity.this,MainInterfaceActivity.class);
                 startActivity(i);
+            }else{
+                Toast.makeText(LoginActivity.this,"账号或密码错误，请重新登录",Toast.LENGTH_SHORT).show();
             }
         }
     }

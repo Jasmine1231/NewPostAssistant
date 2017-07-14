@@ -10,10 +10,10 @@
         android:layout_weight="1"
         android:gravity="center" >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/head" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/default_head" />
     </RelativeLayout>
 
     <LinearLayout
@@ -113,7 +113,7 @@
             android:layout_marginTop="5dp" >
 
             <CheckBox
-                android:id="@+id/cb_logina"
+                android:id="@+id/autologin"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp" />
 

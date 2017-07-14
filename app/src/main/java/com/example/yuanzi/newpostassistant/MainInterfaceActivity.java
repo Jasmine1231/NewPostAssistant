@@ -2,8 +2,14 @@ package com.example.yuanzi.newpostassistant;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
@@ -24,6 +30,8 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 import android.view.View.OnClickListener;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class MainInterfaceActivity extends AppCompatActivity {
 
@@ -32,22 +40,26 @@ public class MainInterfaceActivity extends AppCompatActivity {
     private ImageButton tracking_button;
     private LinearLayout addressList;
     //private PopupWindow popupWindow;
-    private ImageView head_view;
+    private CircleImageView head_view;
     private LinearLayout history;
+    private DrawerLayout drawerLayout;
+    private SharedPreferences pref;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 
         setContentView(R.layout.activity_main_interface);
         more_button = (ImageButton) findViewById(R.id.more);
         edit_button = (ImageButton  ) findViewById(R.id.edit_message);
         tracking_button = (ImageButton) findViewById(R.id.imageButton4);
         addressList = (LinearLayout)findViewById(R.id.address_list) ;
-        head_view = (ImageView) findViewById(R.id.head);
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
+        head_view = (CircleImageView) findViewById(R.id.head);
         //head_view.setOnClickListener(popClick);
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
         history = (LinearLayout)findViewById(R.id.history);
         history.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -82,53 +94,25 @@ public class MainInterfaceActivity extends AppCompatActivity {
         head_view.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(getApplicationContext(),"touxiang",Toast.LENGTH_SHORT).show();
+                drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+        //NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                switch (item.getItemId()){
+//                    case R.id.exit:
+//                        pref.edit().putBoolean("auto_login",false).commit();
+//                        finish();
+//                }
+//                return true;
+//            }
+//        });
     }
 
-    /*View.OnClickListener popClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            getPopupWindow();
-            popupWindow.showAtLocation(v, Gravity.LEFT,0,0);
 
-        }
-    };
-    protected  void  initPopupWindow(){
-
-        final View popipWindow_view = getLayoutInflater().inflate(R.layout.pop_left,null,false);
-        //创建Popupwindow 实例，200，LayoutParams.MATCH_PARENT 分别是宽高
-        popupWindow = new PopupWindow(popipWindow_view,700, ViewGroup.LayoutParams.MATCH_PARENT,true);
-//设置动画效果
-        popupWindow.setAnimationStyle(R.style.AnimationFade);
-        //点击其他地方消失
-        popipWindow_view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (popipWindow_view != null && popipWindow_view.isShown()) {
-
-                    popupWindow.dismiss();
-                    popupWindow = null;
-                }
-                return false;
-            }
-        });
-        popupWindow.setBackgroundDrawable(new ColorDrawable(0));
-
-    }
-    /**
-     * 获取PopipWinsow实例
-     */
-   /* private  void  getPopupWindow(){
-        if (null!=popupWindow){
-            popupWindow.dismiss();
-            return;
-        }else {
-            initPopupWindow();
-        }}*/
-
-
+    //暂时不用的
     public void popupMenu(View v){
         PopupMenu popupMenu = new PopupMenu(this,v);
         MenuInflater inflater = popupMenu.getMenuInflater();
